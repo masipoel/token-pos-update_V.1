@@ -81,17 +81,39 @@
         <label>No. Meter:</label>
         <select id="entry_meter" onchange="autoFillDariMeter()">
             <option value="">-- Pilih No. Meter --</option>
-            <option value="14510802540">14510802540 (PUSKESMAS)</option>
-            <option value="45044658750">45044658750 (PUSKESMAS)</option>
-            <option value="86252365746">86252365746 (PUSKESMAS PEMBANTU)</option>
-            <option value="45020383704">45020383704 (PUSKESMAS MASNI)</option>
-            <option value="32902140311">32902140311 (PUSKESMAS)</option>
-            <option value="14328640900">14328640900 (G. PERTEMUAN PUSKESMAS)</option>
-            <option value="14508190809">14508190809 (PUSKESMAS SP 7)</option>
-            <option value="14431361311">14431361311 (RUANG OPERASI PUSKESMAS WOSI)</option>
-            <option value="45040449238">45040449238 (DINAS KESEHATAN)</option>
-            <option value="86258516391">86258516391 (PUSKESMAS WARKAPI)</option>
-            <option value="86258533263">86258533263 (PUSKESMAS)</option>
+            
+            <optgroup label="PUSKESMAS SANGGENG">
+                <option value="14516287100">14516287100 (PUSKESMAS)</option>
+            </optgroup>
+            
+            <optgroup label="PUSKESMAS PRAFI">
+                <option value="14510802540">14510802540 (PUSKESMAS)</option>
+                <option value="45044658750">45044658750 (PUSKESMAS)</option>
+                <option value="86252365746">86252365746 (PUSKESMAS PEMBANTU)</option>
+            </optgroup>
+            
+            <optgroup label="PUSKESMAS MASNI">
+                <option value="45020383704">45020383704 (PUSKESMAS MASNI)</option>
+                <option value="32902140311">32902140311 (PUSKESMAS)</option>
+                <option value="14328640900">14328640900 (G. PERTEMUAN PUSKESMAS)</option>
+                <option value="14508190809">14508190809 (PUSKESMAS SP 7)</option>
+            </optgroup>
+
+            <optgroup label="PUSKESMAS WOSI">
+                <option value="14431361311">14431361311 (RUANG OPERASI PUSKESMAS WOSI)</option>
+            </optgroup>
+
+            <optgroup label="PUSKESMAS MACUAN">
+                <option value="45040449238">45040449238 (DINAS KESEHATAN)</option>
+            </optgroup>
+
+            <optgroup label="PUSKESMAS TANAH RUBUH">
+                <option value="86258516391">86258516391 (PUSKESMAS WARKAPI)</option>
+            </optgroup>
+
+            <optgroup label="PUSKESMAS SIDEY">
+                <option value="86258533263">86258533263 (PUSKESMAS)</option>
+            </optgroup>
         </select>
 
         <label>IDPEL:</label>
@@ -164,8 +186,9 @@
     let printerCharacteristic = null;
     let dataTersimpan = { riwayat: {} };
 
-    // Database Pelanggan berdasarkan tabel Excel
+    // Database Pelanggan yang telah diperbarui sesuai tabel Excel
     const dbPelanggan = {
+        "14516287100": { idpel: "", nama: "PUSKESMAS", daya: "" }, 
         "14510802540": { idpel: "424230002019", nama: "PUSKESMAS", daya: "S1/3500 VA" },
         "45044658750": { idpel: "424230000747", nama: "PUSKESMAS", daya: "S1/2200 VA" },
         "86252365746": { idpel: "424200048598", nama: "PUSKESMAS PEMBANTU", daya: "S1/900 VA" },
@@ -180,7 +203,7 @@
     };
 
     window.onload = function() {
-        setWaktuSekarang();
+        setWaktuAcak();
     };
 
     function autoFillDariMeter() {
@@ -188,26 +211,65 @@
         if (dbPelanggan[meter]) {
             document.getElementById('combo_idpel').value = dbPelanggan[meter].idpel;
             document.getElementById('entry_nama').value = dbPelanggan[meter].nama;
-            document.getElementById('combo_daya').value = dbPelanggan[meter].daya;
+            
+            if(dbPelanggan[meter].daya !== "") {
+                document.getElementById('combo_daya').value = dbPelanggan[meter].daya;
+            }
         } else {
             document.getElementById('combo_idpel').value = "";
             document.getElementById('entry_nama').value = "";
         }
     }
 
-    function setWaktuSekarang() {
-        const now = new Date();
-        const dd = String(now.getDate()).padStart(2, '0');
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const yyyy = now.getFullYear();
-        const hh = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-        const ss = String(now.getSeconds()).padStart(2, '0');
+    // Fungsi Waktu Acak (08:15 s/d 15:45, Bulan Jan - Sekarang, Bukan Hari Minggu/Libur)
+    function setWaktuAcak() {
+        const end = new Date(); // Hari ini (Bulan berjalan saat ini)
+        const start = new Date(end.getFullYear(), 0, 1); // 1 Januari tahun ini
+
+        let randomDate;
+        let isValid = false;
+
+        // Daftar tanggal libur nasional (Bulan-Tanggal)
+        const liburNasional = ["1-1", "5-1", "8-17", "12-25"];
+
+        while (!isValid) {
+            randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            const day = randomDate.getDay();
+            const dateStr = `${randomDate.getMonth() + 1}-${randomDate.getDate()}`;
+
+            // Cek bukan hari Minggu (0) dan bukan Libur Nasional
+            if (day !== 0 && !liburNasional.includes(dateStr)) {
+                isValid = true;
+            }
+        }
+
+        // Acak Jam antara 8 dan 15
+        let jam = Math.floor(Math.random() * (15 - 8 + 1)) + 8;
+        let menit = 0;
+        let detik = Math.floor(Math.random() * 60);
+
+        if (jam === 8) {
+            // Jika jam 8, menit harus antara 15 s/d 59 (Mulai jam kerja 08:15)
+            menit = Math.floor(Math.random() * (59 - 15 + 1)) + 15; 
+        } else if (jam === 15) {
+            // Jika jam 15, menit maksimum di 45 (Batas akhir 15:45)
+            menit = Math.floor(Math.random() * (45 - 0 + 1)) + 0; 
+        } else {
+            // Jam normal (xx:00 s/d xx:59)
+            menit = Math.floor(Math.random() * 60); 
+        }
+
+        const dd = String(randomDate.getDate()).padStart(2, '0');
+        const mm = String(randomDate.getMonth() + 1).padStart(2, '0');
+        const yyyy = randomDate.getFullYear();
+        const hh = String(jam).padStart(2, '0');
+        const min = String(menit).padStart(2, '0');
+        const ss = String(detik).padStart(2, '0');
+
         document.getElementById('entry_tanggal').value = `${dd}-${mm}-${yyyy} ${hh}:${min}:${ss}`;
     }
 
     function saveData() {
-        // Cache histori transaksi (Opsional - menjaga fungsi awal)
         const idpel = document.getElementById('combo_idpel').value.trim();
         if (idpel) {
             dataTersimpan.riwayat[idpel] = {
@@ -224,25 +286,21 @@
     function hitungKWH(nominal, daya) {
         let d = daya.toUpperCase();
         
-        // Sesuai parameter: Daya 2200VA Rp 500.000 = 657,9 kWh
-        // Tarif = 500.000 / 657,9 = ~759.99392 Rp/kWh
         const tarifPapua1300_2200 = 500000 / 657.9; 
-        
-        // Proporsi diskon terhadap tarif nasional untuk menyesuaikan daya lain secara otomatis
         const rasioDiskon = tarifPapua1300_2200 / 1444.70; 
 
-        let tarif = tarifPapua1300_2200; // Default diatur ke patokan 1300/2200 wilayah timur
+        let tarif = tarifPapua1300_2200; 
         
         if (d.includes("450")) {
-            tarif = 415; // Subsidi tetap
+            tarif = 415; 
         } else if (d.includes("R1/900")) {
-            tarif = 605; // Subsidi tetap
+            tarif = 605; 
         } else if (d.includes("R1M/900")) {
             tarif = 1352 * rasioDiskon;
         } else if (d.includes("1300") || d.includes("2200")) {
-            tarif = tarifPapua1300_2200; // Akan menghasilkan persis 657,9 untuk 500rb
+            tarif = tarifPapua1300_2200; 
         } else if (d.includes("3500") || d.includes("4400") || d.includes("5500") || d.includes("6600")) {
-            tarif = 1699.53 * rasioDiskon; // Disesuaikan proporsional untuk daya tinggi
+            tarif = 1699.53 * rasioDiskon; 
         }
         
         let kwh = nominal / tarif;
@@ -302,9 +360,6 @@
         printerCharacteristic = null;
     }
 
-    // =========================================================================
-    // FUNGSI 1: MEMBANGUN CANVAS MASTER STRUK (Digunakan untuk Simulasi & Print)
-    // =========================================================================
     async function buildReceiptCanvas(htmlText, logoSrc, textPhone, textIG, printWidthDots = 576) {
         const loadImage = (src) => new Promise((resolve) => {
             const img = new Image();
@@ -332,7 +387,7 @@
         }
         
         totalHeight += (lines.length * lineHeight); 
-        totalHeight += 95; // Jarak ekstra di akhir setruk
+        totalHeight += 95; 
 
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -344,14 +399,12 @@
 
         let currentY = 10;
 
-        // GAMBAR LOGO HEADER
         if (logoImg) {
             const logoX = (canvas.width - logoWidth) / 2;
             ctx.drawImage(logoImg, logoX, currentY, logoWidth, logoHeight);
             currentY += logoHeight + 20;
         }
 
-        // GAMBAR TEKS STRUK
         ctx.textBaseline = "top";
         ctx.textAlign = "left";
         for (let line of lines) {
@@ -368,7 +421,6 @@
             currentY += lineHeight;
         }
 
-        // GAMBAR ICON FOOTER
         const margin = 10; 
         const iconSize = 24;
         const gap = 6; 
@@ -399,9 +451,6 @@
         return canvas;
     }
 
-    // =========================================================================
-    // FUNGSI 2: MEMOTONG CANVAS MENJADI BYTE ARRAY UNTUK PRINTER
-    // =========================================================================
     function sliceCanvasForPrinter(canvas) {
         const ctx = canvas.getContext('2d');
         const MAX_SLICE_HEIGHT = 200; 
@@ -443,9 +492,6 @@
         return slices;
     }
 
-    // =========================================================================
-    // FUNGSI 3: MENGIRIM DATA HASIL POTONGAN KE PRINTER
-    // =========================================================================
     async function kirimKePrinterAsli(canvas) {
         if (!printerCharacteristic) return false;
 
@@ -518,7 +564,6 @@
         const kpc = document.getElementById('entry_kpc').value;
         const meter = document.getElementById('entry_meter').value;
         
-        // Memvalidasi apakah meter telah dipilih
         if (!meter) {
             alert("Silakan pilih No. Meter terlebih dahulu!");
             return;
@@ -536,11 +581,23 @@
 
         const rpBayar = nominalStroom + adminPos;
         
-        // Perhitungan JML KWH Otomatis
         let jmlKwh = hitungKWH(nominalStroom, dayaRaw);
 
-        const resi = `98356-21/${new Date().getFullYear()}/${Math.floor(Math.random() * 900000) + 100000}`;
-        const petugas = Math.floor(Math.random() * 900000000) + 100000000;
+        // --- PENYESUAIAN NO RESI DAN PETUGAS OTOMATIS BERDASARKAN KPC ---
+        let prefixResi = "98356-21"; 
+        let petugas = "734026831";   
+
+        if (kpc === "Kpc. Manokwari Sanggeng 98312A") {
+            prefixResi = "98312A-09";
+            petugas = "5500593388"; 
+        } else if (kpc === "Kpc Prafi 98356") {
+            prefixResi = "98356-21";
+            petugas = "734026831";
+        }
+
+        const resi = `${prefixResi}/${new Date().getFullYear()}/${Math.floor(Math.random() * 900000) + 100000}`;
+        // ----------------------------------------------------------------
+
         const noRef = `1098356069${petugas}99${Math.floor(Math.random() * 900000000) + 100000000}`;
         const token = buatTokenAcak();
 
@@ -620,7 +677,7 @@
 
     function tutupSimulasi() {
         document.getElementById('modalStruk').style.display = 'none';
-        setWaktuSekarang(); 
+        setWaktuAcak(); // Diacak kembali saat struk ditutup
     }
 </script>
 
