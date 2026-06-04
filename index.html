@@ -85,6 +85,10 @@
             <optgroup label="PUSKESMAS SANGGENG">
                 <option value="14516287100">14516287100 (PUSKESMAS)</option>
             </optgroup>
+
+            <optgroup label="PUSKESMAS MANSINAM">
+                <option value="56253536546">56253536546 (PUSKESMAS MANSINAM)</option>
+            </optgroup>
             
             <optgroup label="PUSKESMAS PRAFI">
                 <option value="14510802540">14510802540 (PUSKESMAS)</option>
@@ -114,6 +118,14 @@
             <optgroup label="PUSKESMAS SIDEY">
                 <option value="86258533263">86258533263 (PUSKESMAS)</option>
             </optgroup>
+
+            <optgroup label="PUSKESMAS WARMARE">
+                <option value="14550787098">14550787098 (PUSKESMAS WARMARE)</option>
+            </optgroup>
+            
+            <optgroup label="PUSKESMAS NUNI">
+                <option value="14516460566">14516460566 (PUSKESMAS)</option>
+            </optgroup>
         </select>
 
         <label>IDPEL:</label>
@@ -130,12 +142,13 @@
             <option value="R1/1300 VA">R1/1300 VA</option>
             <option value="R1/2200 VA">R1/2200 VA</option>
             <option value="R2/3500 VA">R2/3500 VA</option>
-            <option value="R2/4400 VA">R2/4400 VA</option>
+            <option value="S1/4400 VA">S1/4400 VA</option>
             <option value="S1/5500 VA">S1/5500 VA</option>
             <option value="S1/6600 VA">S1/6600 VA</option>
             <option value="B1/450 VA">B1/450 VA</option>
             <option value="B1/900 VA">B1/900 VA</option>
             <option value="S1/1300 VA">S1/1300 VA</option>
+            <option value="P1/1300 VA">P1/1300 VA</option>
             <option value="B1/2200 VA">B1/2200 VA</option>
             <option value="S1/450 VA">S1/450 VA</option>
             <option value="S1/900 VA">S1/900 VA</option>
@@ -188,7 +201,8 @@
 
     // Database Pelanggan yang telah diperbarui sesuai tabel Excel
     const dbPelanggan = {
-        "14516287100": { idpel: "", nama: "P U S K E S M A S", daya: "" }, 
+        "14516287100": { idpel: "424100821797", nama: "PUSKESMAS SANGGENG", daya: "S1/4400 VA" },
+        "56253536546": { idpel: "424100774527", nama: "PUSKESMAS MANSINAM", daya: "P1/1300 VA" },
         "14510802540": { idpel: "424230002019", nama: "P U S K E S M A S", daya: "S1/3500 VA" },
         "45044658750": { idpel: "424230000747", nama: "P U S K E S M A S", daya: "S1/2200 VA" },
         "86252365746": { idpel: "424200048598", nama: "PUSKESMAS PEMBANTU", daya: "S1/900 VA" },
@@ -199,7 +213,9 @@
         "14431361311": { idpel: "424100762939", nama: "RUANG OPERASI PUSKESMAS WOSI", daya: "S1/3500 VA" },
         "45040449238": { idpel: "424200134095", nama: "DINAS KESEHATAN", daya: "S1/5500 VA" },
         "86258516391": { idpel: "424330000296", nama: "PUSKESMAS WARKAPI", daya: "S1/5500 VA" },
-        "86258533263": { idpel: "424320004333", nama: "P U S K E S M A S", daya: "S1/1300 VA" }
+        "86258533263": { idpel: "424320004333", nama: "P U S K E S M A S", daya: "S1/1300 VA" },
+        "14550787098": { idpel: "424220005747", nama: "PUSKESMAS WARMARE", daya: "S1/1300 VA" },
+        "14516460566": { idpel: "424101085449", nama: "PUSKESMAS NUNI", daya: "S1/3500 VA" }
     };
 
     window.onload = function() {
